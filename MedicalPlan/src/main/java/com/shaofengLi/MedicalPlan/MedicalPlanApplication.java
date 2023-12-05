@@ -1,10 +1,9 @@
 package com.shaofengLi.MedicalPlan;
 
-import com.shaofengLi.MedicalPlan.Service.MedicalPlanService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication()
 public class MedicalPlanApplication {
 
 //	public static MedicalPlanService MediaPlanService;

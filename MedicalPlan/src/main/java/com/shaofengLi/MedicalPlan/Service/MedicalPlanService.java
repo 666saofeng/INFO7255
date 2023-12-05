@@ -155,6 +155,25 @@ public class MedicalPlanService {
 //    public boolean containsETag(String ETag){
 //        return jedis.exists(ETag);
 //    }
+    public void updateMedicalPlan(String key,JSONObject plan){
+        deleteMedicalPlan(key);
+        CreateMedicalPlan(plan);
+    }
+    public boolean findObject(String headkey,String key){
+        Set<String> keys = jedis.keys(headkey + ":*");
+        Deque<String> q = new ArrayDeque<>(keys);
+        while(!q.isEmpty()){
+            String temp = q.pollFirst();
+            if(jedis.smembers(temp).contains(key)){
+                //update
+                return true;
+            }
+            else{
+                q.add(jedis.smembers(temp).iterator().next());
+            }
+        }
+        return false;
+    }
     private boolean isInteger(String str) {
         try {
             Integer.parseInt(str);
@@ -162,5 +181,17 @@ public class MedicalPlanService {
             return false;
         }
         return true;
+    }
+    public Map<String,String> getAllETag(){
+        Set<String> keys = jedis.keys("*");
+        Map<String,String> res = new HashMap<>();
+        for (String key:keys){
+            if("hash".equals(jedis.type(key))){
+                if(jedis.hexists(key,"ETag")){
+                    res.put(key,jedis.hget(key,"ETag"));
+                }
+            }
+        }
+        return res;
     }
 }
